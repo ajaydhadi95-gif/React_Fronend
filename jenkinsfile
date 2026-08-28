@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'ajaydhadi95/booking_frontend'
+        IMAGE_TAG  = "${BUILD_NUMBER}"
+    }
+
     stages {
 
         stage('Checkout') {
@@ -12,9 +17,48 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t booking_frontend:latest .'
+                sh '''
+                    docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
+                '''
             }
         }
 
+        stage('Docker Push') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login \
+                            -u "$DOCKER_USERNAME" \
+                            --password-stdin
+
+                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                        docker push ${IMAGE_NAME}:latest
+
+                    '''
+                }
+            }
+        }
+    }
+}
+
+post {
+
+        success {
+            echo "Deployment Successful!"
+            cleanWs()
+            sh 'docker image prune -f'
+        }
+
+        failure {
+            echo "Deployment Failed!"
+            cleanWs()
+        }
     }
 }

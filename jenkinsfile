@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+
+    stages {
+        stage ('code clone') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/ajaydhadi95-gif/Booking_app_frontend.git'
+            }
+        }
+
+        stage ( code build ) {
+            steps {
+                sh 
+                'build -t booking_frontend:latest .'
+            }
+        }
+    }
+}

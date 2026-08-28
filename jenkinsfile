@@ -41,23 +41,23 @@ pipeline {
                         docker push ${IMAGE_NAME}:${IMAGE_TAG}
                         docker push ${IMAGE_NAME}:latest
 
+                        docker logout
                     '''
                 }
             }
         }
     }
-}
 
-post {
-
+    post {
         success {
             echo "Deployment Successful!"
             cleanWs()
             sh 'docker image prune -f'
         }
 
-        failure {
+        ffailure {
             echo "Deployment Failed!"
             cleanWs()
         }
     }
+}

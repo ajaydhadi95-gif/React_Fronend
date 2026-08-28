@@ -55,7 +55,7 @@ pipeline {
             sh 'docker image prune -f'
         }
 
-        ffailure {
+        failure {
             echo "Deployment Failed!"
             cleanWs()
         }

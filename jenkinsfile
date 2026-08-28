@@ -45,10 +45,18 @@ pipeline {
                     '''
                 }
             }
-            stage ('k8s deployment') {
-                steps {
-                    sh 'kubectl apply -f deployment.yaml'
-                }
+        }
+
+        stage('K8s Deployment') {
+            steps {
+                sh '''
+                    kubectl apply -f deployment.yaml
+
+                    kubectl set image deployment/booking-frontend \
+                        booking-frontend=${IMAGE_NAME}:${IMAGE_TAG}
+
+                    kubectl rollout status deployment/booking-frontend
+                '''
             }
         }
     }

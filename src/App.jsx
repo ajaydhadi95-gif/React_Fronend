@@ -1,54 +1,58 @@
-```jsx
 import "./App.css";
 
 function App() {
   return (
     <div className="login-page">
-      <div className="overlay"></div>
+      <div className="overlay">
 
-      <header className="header">
-        <div className="logo">NETFLIX</div>
-      </header>
+        <header className="header">
+          <div className="logo">NETFLIX</div>
+        </header>
 
-      <main className="login-container">
-        <div className="login-box">
-          <h1>Sign In</h1>
+        <main className="login-container">
+          <div className="login-box">
 
-          <form>
-            <input
-              type="email"
-              placeholder="Email or mobile number"
-            />
+            <h1>Sign In</h1>
 
-            <input
-              type="password"
-              placeholder="Password"
-            />
+            <form onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="email"
+                placeholder="Email or mobile number"
+                required
+              />
 
-            <button type="submit">Sign In</button>
-          </form>
+              <input
+                type="password"
+                placeholder="Password"
+                required
+              />
 
-          <div className="help-row">
-            <label>
-              <input type="checkbox" />
-              Remember me
-            </label>
+              <button type="submit">Sign In</button>
 
-            <a href="#">Need help?</a>
+              <div className="options">
+                <label>
+                  <input type="checkbox" />
+                  Remember me
+                </label>
+
+                <span>Need help?</span>
+              </div>
+            </form>
+
+            <p className="signup">
+              New to Netflix? <strong>Sign up now.</strong>
+            </p>
+
+            <p className="recaptcha">
+              This page is a Netflix-inspired demo UI for the DevOps project.
+            </p>
+
           </div>
+        </main>
 
-          <p className="signup">
-            New to Netflix? <span>Sign up now.</span>
-          </p>
-
-          <p className="captcha">
-            This page is protected by Google reCAPTCHA to ensure you're not a bot.
-          </p>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }
 
 export default App;
-```

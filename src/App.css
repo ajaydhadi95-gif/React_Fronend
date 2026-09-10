@@ -1,204 +1,238 @@
-#root {
-  width: 100%;
-  min-height: 100vh;
-}
-
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #000;
+.app-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.login-page {
-  min-height: 100vh;
+/* ---------- Starfield (realistic scattered stars) ---------- */
+.starfield {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  animation: twinkle 4s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+/* ---------- Welcome / Space Page ---------- */
+.space-page {
   position: relative;
-  background:
-    linear-gradient(
-      rgba(0, 0, 0, 0.65),
-      rgba(0, 0, 0, 0.75)
-    ),
-    url("https://assets.nflxext.com/ffe/siteui/vlv3/7962b6e5-4c0e-4a7f-9a2b-4e5e8c3f8a5d/web/IN-en-20250901-TRIFECTA-perspective_hero_large.jpg");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  color: white;
-}
-
-.header {
-  position: relative;
-  z-index: 2;
-  padding: 25px 50px;
-}
-
-.logo {
-  color: #e50914;
-  font-size: 40px;
-  font-weight: 900;
-  letter-spacing: -2px;
-}
-
-.login-container {
-  position: relative;
-  z-index: 2;
-
-  min-height: calc(100vh - 100px);
-
+  width: 100%;
+  height: 100vh;
+  background: radial-gradient(ellipse at center, #0a0e17 0%, #000000 100%);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-  padding: 30px 20px;
+/* ---------- Solar System ---------- */
+.solar-system {
+  position: absolute;
+  width: 680px;
+  height: 680px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transform: perspective(900px) rotateX(45deg) scale(0.85);
+}
+
+.sun {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffbe0, #ffd25c 45%, #ff9c1a 75%, #d9530a);
+  box-shadow: 0 0 20px 6px rgba(255, 190, 80, 0.7), 0 0 60px 20px rgba(255, 140, 0, 0.4);
+  z-index: 2;
+}
+
+.sun-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,180,60,0.25), transparent 70%);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+.orbit {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: spin linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.planet {
+  position: absolute;
+  top: 0;
+  border-radius: 50%;
+  box-shadow: inset -3px -3px 5px rgba(0,0,0,0.6);
+}
+
+/* realistic-ish shaded colors using radial-gradient for a lit sphere look */
+.mercury { background: radial-gradient(circle at 35% 35%, #d8d4d0, #8c8781 70%); }
+.venus   { background: radial-gradient(circle at 35% 35%, #f5dfa3, #c9974d 70%); }
+.earth   { background: radial-gradient(circle at 35% 35%, #6fb6ff, #1b4b91 60%, #123 90%); }
+.mars    { background: radial-gradient(circle at 35% 35%, #e28860, #9c3a15 70%); }
+.jupiter { background: radial-gradient(circle at 35% 35%, #e8c9a0, #a97a4b 70%); }
+.saturn  { background: radial-gradient(circle at 35% 35%, #f0dfb0, #b6935c 70%); }
+.uranus  { background: radial-gradient(circle at 35% 35%, #c9f2f2, #6fbdbd 70%); }
+.neptune { background: radial-gradient(circle at 35% 35%, #7d9bff, #2a3fae 70%); }
+
+.saturn-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42px;
+  height: 42px;
+  border: 3px solid rgba(230, 210, 160, 0.55);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(78deg);
+  box-shadow: 0 0 4px rgba(230,210,160,0.3);
+}
+
+.moon-orbit {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 28px;
+  height: 28px;
+  animation: spin 3s linear infinite;
+}
+
+.moon {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  background: #ccc;
+  border-radius: 50%;
+}
+
+/* ---------- Welcome text overlay ---------- */
+.welcome-text {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  margin-top: 380px;
+}
+
+.space-title {
+  font-size: 2.6rem;
+  color: #fff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px #7f9dff, 0 0 40px #3a5bd9;
+}
+
+.space-subtitle {
+  color: #b8c4e0;
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+
+.glow-btn {
+  margin-top: 30px;
+  padding: 12px 30px;
+  font-size: 1rem;
+  color: #fff;
+  background: linear-gradient(135deg, #3a5bd9, #1d9e75);
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.glow-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 18px #3a5bd9;
+}
+
+/* ---------- Login Page ---------- */
+.login-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, #0a0e17 0%, #000000 100%);
+  overflow: hidden;
 }
 
 .login-box {
-  width: 100%;
-  max-width: 450px;
-
-  background: rgba(0, 0, 0, 0.78);
-
-  padding: 48px 55px;
-
-  border-radius: 4px;
-}
-
-.login-box h1 {
-  font-size: 32px;
-  margin-bottom: 30px;
-}
-
-.login-box form {
+  position: relative;
+  z-index: 2;
+  background: rgba(20, 25, 40, 0.85);
+  backdrop-filter: blur(6px);
+  padding: 40px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 15px;
+  width: 320px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 0 25px rgba(58, 91, 217, 0.35);
 }
 
-.login-box input[type="email"],
-.login-box input[type="password"] {
-  width: 100%;
-  height: 52px;
+.login-box h2 {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 10px;
+}
 
-  padding: 0 16px;
-
-  background: #333;
-  border: 1px solid #777;
-  border-radius: 4px;
-
-  color: white;
-  font-size: 16px;
-
+.login-box input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
   outline: none;
 }
 
-.login-box input::placeholder {
-  color: #b3b3b3;
-}
-
-.login-box input:focus {
-  border-color: white;
-}
-
 .login-box button {
-  width: 100%;
-  height: 50px;
-
-  margin-top: 8px;
-
-  background: #e50914;
-  color: white;
-
+  padding: 10px;
   border: none;
-  border-radius: 4px;
-
-  font-size: 16px;
-  font-weight: bold;
-
+  border-radius: 8px;
+  background: #3a5bd9;
+  color: #fff;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .login-box button:hover {
-  background: #f40612;
+  background: #5b7aff;
 }
 
-.help-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  margin-top: 12px;
-
-  color: #b3b3b3;
-  font-size: 13px;
+.back-link {
+  color: #9ca3af;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.85rem;
 }
-
-.help-row label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.help-row input {
-  width: auto;
-}
-
-.help-row a {
-  color: #b3b3b3;
-  text-decoration: none;
-}
-
-.help-row a:hover {
-  text-decoration: underline;
-}
-
-.signup {
-  margin-top: 45px;
-
-  color: #737373;
-
-  font-size: 16px;
-}
-
-.signup span {
-  color: white;
-}
-
-.captcha {
-  margin-top: 18px;
-
-  color: #737373;
-
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-@media (max-width: 600px) {
-
-  .header {
-    padding: 20px 25px;
-  }
-
-  .logo {
-    font-size: 30px;
-  }
-
-  .login-container {
-    align-items: flex-start;
-    padding-top: 40px;
-  }
-
-  .login-box {
-    padding: 35px 25px;
-  }
-
-  .login-box h1 {
-    font-size: 28px;
-  }
-}
-

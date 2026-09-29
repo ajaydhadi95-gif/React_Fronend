@@ -1,165 +1,133 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import "./App.css";
 
-function StarField() {
-  // Generate random stars using box-shadow trick (realistic scattered look)
-  const stars = useMemo(() => {
-    let shadow = [];
-    for (let i = 0; i < 200; i++) {
-      const x = Math.floor(Math.random() * 2000);
-      const y = Math.floor(Math.random() * 2000);
-      shadow.push(`${x}px ${y}px #fff`);
-    }
-    return shadow.join(",");
-  }, []);
-
-  return (
-    <div className="starfield" style={{ boxShadow: stars }}></div>
-  );
-}
-
-function SolarSystem() {
-  const planets = [
-    { name: "mercury", size: 5, orbit: 60, duration: 4 },
-    { name: "venus", size: 8, orbit: 85, duration: 7 },
-    { name: "earth", size: 9, orbit: 115, duration: 10, hasMoon: true },
-    { name: "mars", size: 7, orbit: 145, duration: 15 },
-    { name: "jupiter", size: 24, orbit: 195, duration: 25 },
-    { name: "saturn", size: 20, orbit: 245, duration: 32, hasRing: true },
-    { name: "uranus", size: 14, orbit: 285, duration: 40 },
-    { name: "neptune", size: 14, orbit: 320, duration: 48 },
-  ];
-
-  return (
-    <div className="solar-system">
-      <div className="sun">
-        <div className="sun-glow"></div>
-      </div>
-      {planets.map((p) => (
-        <div
-          key={p.name}
-          className="orbit"
-          style={{
-            width: `${p.orbit * 2}px`,
-            height: `${p.orbit * 2}px`,
-            animationDuration: `${p.duration}s`,
-          }}
-        >
-          <div
-            className={`planet ${p.name}`}
-            style={{ width: `${p.size}px`, height: `${p.size}px` }}
-          >
-            {p.hasRing && <div className="saturn-ring"></div>}
-            {p.hasMoon && <div className="moon-orbit"><div className="moon"></div></div>}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
+const UNITS_PER_KW = 120; // approx. units generated per KW per month
+const sizeToKw = { "1KW": 1, "3KW": 3, "5KW": 5, "10KW+": 10 };
 
 function App() {
-  const [page, setPage] = useState("welcome");
-  const [form, setForm] = useState({ email: "", password: "" });
+  const initial = { fullName: "", phone: "", city: "", systemSize: "3KW", roofArea: "" };
+  const [formData, setFormData] = useState(initial);
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleLogin = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.email || !form.password) {
-      alert("Email aur password dono bharo!");
-      return;
-    }
-    alert(`Welcome, ${form.email}! Login successful 🚀`);
+    console.log("Solar Booking Details:", formData);
+    setSubmitted(true);
   };
+
+  const handleReset = () => {
+    setFormData(initial);
+    setSubmitted(false);
+  };
+
+  const units = sizeToKw[formData.systemSize] * UNITS_PER_KW;
 
   return (
-    <div className="app-container">
-      {page === "welcome" && (
-        <div className="space-page">
-          <StarField />
-          <SolarSystem />
-          <div className="welcome-text">
-            <h1 className="space-title">Welcome to Space</h1>
-            <p className="space-subtitle">Explore the universe with us</p>
-            <button className="glow-btn" onClick={() => setPage("login")}>
-              Enter Mission Control
-            </button>
-          </div>
-        </div>
-      )}
+    <div className="page">
+      {/* Background layers */}
+      <div className="stars s1" />
+      <div className="stars s2" />
+      <span className="shoot sh1" />
+      <span className="shoot sh2" />
+      <span className="shoot sh3" />
 
-      {page === "login" && (
-        <div className="login-page">
-          <StarField />
-          <form className="login-box" onSubmit={handleLogin}>
-            <h2>Astronaut Login</h2>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              value={form.email}
-              onChange={handleChange}
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              value={form.password}
-              onChange={handleChange}
-            />
-            <button type="submit">Login</button>
-            <p className="back-link" onClick={() => setPage("welcome")}>
-              ← Back to Welcome
-            </p>
+      {/* Top-right live sun */}
+      <div className="rsun">
+        <div className="rsun-rays" />
+        <div className="rsun-glow" />
+        <div className="rsun-core" />
+      </div>
+
+      {/* Center sun + planets */}
+      <div className="system">
+        <div className="sun" />
+        <div className="orbit o1"><div className="planet mercury" /></div>
+        <div className="orbit o2"><div className="planet venus" /></div>
+        <div className="orbit o3"><div className="planet earth" /></div>
+        <div className="orbit o4"><div className="planet mars" /></div>
+        <div className="orbit o5"><div className="planet jupiter" /></div>
+        <div className="orbit o6"><div className="planet saturn" /></div>
+      </div>
+
+      {/* Card */}
+      <div className="card">
+        <header className="header">
+          <div className="logo">☀️</div>
+          <h1>Solar Rooftop Booking</h1>
+          <p>Book solar panels for your home today</p>
+          <div className="badges">
+            <span>⚡ Lower Electricity Bills</span>
+            <span>🌱 Eco Friendly</span>
+            <span>🛡️ 25 Years Warranty</span>
+          </div>
+        </header>
+
+        {submitted ? (
+          <div className="success">
+            <div className="tick">✓</div>
+            <h2>Booking Successful!</h2>
+            <p>Thank you, <strong>{formData.fullName}</strong>!</p>
+            <p>Our team will contact you soon at <strong>{formData.phone}</strong>.</p>
+            <div className="summary">
+              <div><span>System Size</span><strong>{formData.systemSize}</strong></div>
+              <div><span>City</span><strong>{formData.city}</strong></div>
+              <div><span>Est. Generation</span><strong>~{units} units/month</strong></div>
+              {formData.roofArea && (
+                <div><span>Roof Area</span><strong>{formData.roofArea} sq.ft</strong></div>
+              )}
+            </div>
+            <button className="btn" onClick={handleReset}>Make a New Booking</button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="form">
+            <div className="field">
+              <label>👤 Full Name</label>
+              <input type="text" name="fullName" value={formData.fullName}
+                onChange={handleChange} placeholder="Enter your name" required />
+            </div>
+
+            <div className="field">
+              <label>📞 Phone Number</label>
+              <input type="tel" name="phone" value={formData.phone}
+                onChange={handleChange} placeholder="10-digit mobile number"
+                pattern="[0-9]{10}" title="Enter a 10-digit mobile number" required />
+            </div>
+
+            <div className="field">
+              <label>📍 City / Location</label>
+              <input type="text" name="city" value={formData.city}
+                onChange={handleChange} placeholder="Enter your city" required />
+            </div>
+
+            <div className="field">
+              <label>🔋 Solar System Capacity</label>
+              <select name="systemSize" value={formData.systemSize} onChange={handleChange}>
+                <option value="1KW">1 KW (Small House / 1-2 BHK)</option>
+                <option value="3KW">3 KW (Standard House / 2-3 BHK)</option>
+                <option value="5KW">5 KW (Large House / Commercial)</option>
+                <option value="10KW+">10 KW+ (Industrial / Big Complex)</option>
+              </select>
+            </div>
+
+            <div className="estimate">
+              ⚡ Estimated generation: <strong>~{units} units / month</strong>
+            </div>
+
+            <div className="field">
+              <label>🏠 Roof Area (sq. ft.)</label>
+              <input type="number" name="roofArea" value={formData.roofArea}
+                onChange={handleChange} placeholder="e.g. 500" />
+            </div>
+
+            <button type="submit" className="btn">☀️ Book Solar Inspection</button>
           </form>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
 
 export default App;
-
-const [mode, setMode] = useState("login");
-const [error, setError] = useState("");
-const [loading, setLoading] = useState(false);
-
-const handleAuth = async (e) => {
-  e.preventDefault();
-  setError("");
-
-  if (!form.email || !form.password) {
-    setError("Email aur password dono bharo!");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const endpoint = mode === "login" ? "login" : "signup";
-    const res = await fetch(`http://localhost:8080/api/auth/${endpoint}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      if (mode === "signup") {
-        alert("Signup ho gaya! Ab login karo.");
-        setMode("login");
-      } else {
-        alert(`Welcome, ${form.email}! 🚀`);
-      }
-    } else {
-      setError(data.message);
-    }
-  } catch (err) {
-    setError("Backend se connect nahi ho paaya. Server chal raha hai?");
-  } finally {
-    setLoading(false);
-  }
-};
-
